@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>時計</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        overflow: hidden;
+        }
+
+        .dynamic-text {
+        font-size: 5vw; /* 画面幅の10%をフォントサイズに設定 */
+        white-space: nowrap; /* 改行を防止 */
+        }
+
+        .number {
+            /*太くて丸文字*/
+            font-family: 'Arial Black', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <!-- 日付、曜日、時刻を表示するためのスパン要素を用意する-->
+    <div class="dynamic-text">
+        <span class="number" id="date"></span><span id="dayOfWeek" class="dayOfWeek"></span> <span id="time" class="number"></span>
+    </div>
+</body>
+<script>
+    // showClock関数の次回実行を設定する。ただし、単純に1秒待つのではなく現在のミリ秒時刻から次の秒になるまでのミリ秒を計算して待つ。
+    function updateClock() {
+        var nowTime = new Date();
+        var nowSec = nowTime.getSeconds();
+        var nowMSec = nowTime.getMilliseconds();
+        var nextSec = 1000 - nowMSec;
+        setTimeout(showClock, nextSec);
+    }
+    function twodigits(num) {
+        return ("0" + num).slice(-2);
+    }
+    function showClock() {
+        var nowTime = new Date();
+        var nowYear = nowTime.getFullYear();
+        var nowMonth = twodigits(nowTime.getMonth() + 1);
+        var nowDay = twodigits(nowTime.getDate());
+        var dayOfWeek = nowTime.getDay();
+        var msg = nowMonth + "/" + nowDay;
+        document.getElementById("date").innerHTML = msg;
+
+        var dayOfWeekStr = ["日", "月", "火", "水", "木", "金", "土"];
+        msg = "(" + dayOfWeekStr[dayOfWeek] + ")";
+        // 土曜日は青、日曜日は赤で表示する
+        if (dayOfWeek == 0) {
+            document.getElementById("dayOfWeek").style.color = "red";
+        } else if (dayOfWeek == 6) {
+            document.getElementById("dayOfWeek").style.color = "blue";
+        } else {
+            document.getElementById("dayOfWeek").style.color = "black";
+        }
+        document.getElementById("dayOfWeek").innerHTML = msg;
+
+        var nowHour = twodigits(nowTime.getHours());
+        var nowMin = twodigits(nowTime.getMinutes());
+        var nowSec = twodigits(nowTime.getSeconds());
+        var msg = nowHour + ":" + nowMin + ":" + nowSec;
+        document.getElementById("time").innerHTML = msg;
+        updateClock();
+    }
+    // 初回実行
+    showClock();
+</script>
+</html>
